@@ -84,28 +84,45 @@
 
         // --- COMPONENTS ---
 
-        // 1. TIKTOK/IN-APP BROWSER OVERLAY (NEW!)
+        // 1. TIKTOK/IN-APP BROWSER OVERLAY (UPDATED: AUTO REDIRECT + STRONGER DETECTION)
         const InAppBrowserGuard = ({ children }) => {
             const [isInApp, setIsInApp] = useState(false);
 
             useEffect(() => {
-                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-                // Detect TikTok, Instagram, Facebook, etc.
-                if (/TikTok|Instagram|FBAN|FBAV/i.test(userAgent)) {
+                const ua = navigator.userAgent || navigator.vendor || window.opera;
+                
+                // 1. Stronger Detection for TikTok/Bytedance
+                // TikTok often changes UA, so we check for multiple keywords
+                const isTikTok = /TikTok|Douyin|Bytedance|Musical\.ly|Trill/i.test(ua);
+                
+                // 2. Generic In-App Check (Instagram, Facebook, or any generic WebView on Android)
+                const isGenericInApp = /Instagram|FBAN|FBAV/i.test(ua) || (/wv/i.test(ua) && /Android/i.test(ua));
+
+                if (isTikTok || isGenericInApp) {
                     setIsInApp(true);
+                    
+                    // 3. AUTO-REDIRECT LOGIC (ANDROID ONLY)
+                    // Try to force break out to Chrome using 'intent://'
+                    if (/Android/i.test(ua)) {
+                        setTimeout(() => {
+                            // This attempts to open the URL in Chrome App directly
+                            // If Chrome isn't installed, it falls back to browser (which might still be webview, hence the overlay remains as backup)
+                            window.location.href = "intent://rbscript.xyz#Intent;scheme=https;package=com.android.chrome;end";
+                        }, 100); // 100ms delay (Instant)
+                    }
                 }
             }, []);
 
             if (isInApp) {
                 return (
-                    <div className="fixed inset-0 z-[100] bg-[#050508] flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+                    <div className="fixed inset-0 z-[9999] bg-[#050508] flex flex-col items-center justify-center p-6 text-center animate-fade-in">
                         {/* Background effects */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px]"></div>
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px]"></div>
 
                         {/* Top Right Arrow Animation */}
-                        <div className="absolute top-8 right-8 text-cyan-400 animate-point">
-                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <div className="absolute top-4 right-4 text-cyan-400 animate-point z-50">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                 <polyline points="15 3 21 3 21 9"></polyline>
                                 <line x1="10" x2="21" y1="14" y2="3"></line>
@@ -123,19 +140,19 @@
                         </p>
 
                         {/* Instructions */}
-                        <div className="bg-[#131318] border border-white/10 rounded-2xl p-6 w-full max-w-sm text-left shadow-2xl">
+                        <div className="bg-[#131318] border border-white/10 rounded-2xl p-6 w-full max-w-sm text-left shadow-2xl relative z-10">
                             <div className="flex items-start gap-4 mb-6">
                                 <div className="bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">1</div>
                                 <div>
                                     <p className="text-gray-300 font-medium">Click the <span className="text-white font-bold">Three Dots (...)</span></p>
-                                    <p className="text-gray-500 text-sm mt-1">Located at the top right corner of your screen.</p>
+                                    <p className="text-gray-500 text-sm mt-1">Located at the top right corner.</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">
                                 <div className="bg-cyan-900/50 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-cyan-400 font-bold text-sm">2</div>
                                 <div>
                                     <p className="text-gray-300 font-medium">Select <span className="text-white font-bold">Open in Browser</span></p>
-                                    <p className="text-gray-500 text-sm mt-1">Usually looks like a Chrome or Safari icon.</p>
+                                    <p className="text-gray-500 text-sm mt-1">Looks like a Chrome or Safari icon.</p>
                                 </div>
                             </div>
                         </div>
@@ -268,226 +285,3 @@
 
         // --- MAIN PAGE COMPONENT ---
         const ScriptHub = () => {
-            const [searchQuery, setSearchQuery] = useState('');
-            const [selectedScript, setSelectedScript] = useState(null); 
-            
-            // Script Data
-            const scripts = [
-                {
-                    id: 1,
-                    title: "Blox Fruits God Mode",
-                    image: "https://i.ibb.co/jkRP8Fnd/0-1766455675687.jpg", 
-                    desc: "Auto Farm, Fruit Sniper, Auto Raid. Best for mobile/pc.",
-                    tags: ["Auto Farm", "ESP", "No Key"],
-                    updated: "10m ago",
-                    lockerUrl: "https://execmods.com/cl/i/m55252",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 2,
-                    title: "The Forge [BETA] 2025",
-                    image: "https://i.ibb.co/C5FFDWBq/no-Filter.png",
-                    desc: "Undetected script with God Mode, Instant Craft & Attack features.",
-                    tags: ["God Mode", "Crafting", "BETA"],
-                    updated: "1h ago",
-                    lockerUrl: "https://execmods.com/cl/i/xp69kv",
-                    support: { pc: true, mobile: true } 
-                },
-                {
-                    id: 3,
-                    title: "YouTube Music Player V4",
-                    image: "https://i.ibb.co/KpfTK6xt/0-1764778560329.webp",
-                    desc: "Play any song from YouTube directly in Roblox. Fully controllable.",
-                    tags: ["Music", "Utility", "Search"],
-                    updated: "2h ago",
-                    lockerUrl: "https://execmods.com/cl/i/m5er22",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 4,
-                    title: "Volleyball Legends Auto",
-                    image: "https://i.ibb.co/kgHL0xYV/noFilter.webp",
-                    desc: "Auto Play, Auto Spin, Infinite Spins. Climb ranks easily.",
-                    tags: ["Auto Play", "Spins", "Rank Push"],
-                    updated: "3h ago",
-                    lockerUrl: "https://execmods.com/cl/i/o463xr",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 5,
-                    title: "Brainrot Stealer",
-                    image: "https://i.ibb.co/N2pQN6Wd/109983668079237-1763934806891.webp",
-                    desc: "Auto Hatch, Relic finder, Shiny Hunter. Fast farming.",
-                    tags: ["Farming", "Pets", "Shiny"],
-                    updated: "5h ago",
-                    lockerUrl: "https://execmods.com/cl/i/7jdqlv",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 6,
-                    title: "99 Nights - Fly & Speed",
-                    image: "https://i.ibb.co/mnmBDrx/79546208627805-1764043205099.webp",
-                    desc: "Custom Aura, Speed hacks, High Jump. Dominate the server.",
-                    tags: ["Speed", "Fly", "Aura"],
-                    updated: "1d ago",
-                    lockerUrl: "https://execmods.com/cl/i/7jdx7n",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 7,
-                    title: "Plants Vs Brainrots Aim",
-                    image: "https://i.ibb.co/Zpp97Nn5/noFilter.webp",
-                    desc: "Silent Aim, Auto Stomp, Infinite Cash. Undetected.",
-                    tags: ["Aimlock", "Cash", "Silent Aim"],
-                    updated: "1d ago",
-                    lockerUrl: "https://execmods.com/cl/i/82drvr",
-                    support: { pc: true, mobile: true } 
-                }
-            ];
-
-            const filteredScripts = scripts.filter(s => 
-                s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                s.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
-
-            return (
-                <InAppBrowserGuard>
-                    <div className="min-h-screen pb-20">
-                        
-                        {/* Background Gradients */}
-                        <div className="fixed inset-0 pointer-events-none -z-10">
-                            <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/20 rounded-full blur-[100px]"></div>
-                            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px]"></div>
-                        </div>
-
-                        {/* Navbar */}
-                        <nav className="border-b border-white/5 bg-[#050508]/80 backdrop-blur-md sticky top-0 z-30">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-center">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-2 rounded-lg shadow-lg shadow-cyan-500/20">
-                                        <Icons.Terminal className="w-5 h-5 text-white" />
-                                    </div>
-                                    <span className="text-xl font-bold tracking-tight text-white">RB<span className="text-cyan-400">Script</span></span>
-                                </div>
-                            </div>
-                        </nav>
-
-                        {/* Hero Section */}
-                        <header className="pt-16 pb-12 text-center px-4">
-                            <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight">
-                                Dominate Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Favorite Games</span>
-                            </h1>
-                            <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-                                Unlock hidden features, auto-farm, and god-mode with our premium selection of undetected scripts.
-                            </p>
-
-                            {/* Search Bar */}
-                            <div className="max-w-xl mx-auto relative group">
-                                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                                <div className="relative bg-[#131318] border border-white/10 rounded-2xl flex items-center p-2 shadow-2xl">
-                                    <Icons.Search className="w-6 h-6 text-gray-500 ml-3" />
-                                    <input 
-                                        type="text" 
-                                        placeholder="Search scripts (e.g., Blox Fruits)..." 
-                                        className="w-full bg-transparent border-none text-white px-4 py-3 focus:outline-none placeholder-gray-600 font-medium"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        </header>
-
-                        {/* Scripts Grid */}
-                        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredScripts.map(script => (
-                                    <div 
-                                        key={script.id} 
-                                        onClick={() => setSelectedScript(script)} // CLICKABLE CARD
-                                        className="group glass-panel rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-900/10 flex flex-col cursor-pointer"
-                                    >
-                                        
-                                        {/* Image */}
-                                        <div className="relative h-48 overflow-hidden">
-                                            <div className="absolute inset-0 bg-gradient-to-t from-[#141419] to-transparent z-10 opacity-90"></div>
-                                            <img src={script.image} alt={script.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                            
-                                            {/* Support Badges */}
-                                            <div className="absolute top-3 right-3 z-20 flex gap-1">
-                                                {script.support.pc && (
-                                                    <div className="bg-black/60 backdrop-blur p-1.5 rounded-lg border border-white/10" title="PC Supported">
-                                                        <Icons.Monitor className="w-4 h-4 text-cyan-400" />
-                                                    </div>
-                                                )}
-                                                {script.support.mobile && (
-                                                    <div className="bg-black/60 backdrop-blur p-1.5 rounded-lg border border-white/10" title="Mobile Supported">
-                                                        <Icons.Smartphone className="w-4 h-4 text-green-400" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="p-6 pt-2 flex-1 flex flex-col">
-                                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">{script.title}</h3>
-                                            
-                                            <div className="flex flex-wrap gap-2 mb-4">
-                                                {script.tags.map(tag => (
-                                                    <span key={tag} className="text-[11px] font-bold uppercase tracking-wider px-2 py-1 bg-white/5 text-gray-400 rounded border border-white/5">
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-
-                                            <p className="text-gray-400 text-sm mb-6 line-clamp-2 leading-relaxed flex-1">
-                                                {script.desc}
-                                            </p>
-
-                                            <div className="flex items-center justify-between gap-4 mt-auto">
-                                                <span className="text-xs font-medium text-gray-500">Updated {script.updated}</span>
-                                                <button 
-                                                    className="bg-white text-black group-hover:bg-cyan-400 group-hover:text-black px-5 py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center gap-2"
-                                                >
-                                                    <Icons.Download className="w-4 h-4" />
-                                                    Get Script
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {filteredScripts.length === 0 && (
-                                <div className="text-center py-20">
-                                    <p className="text-gray-500 text-lg">No scripts found matching "{searchQuery}"</p>
-                                </div>
-                            )}
-                        </main>
-
-                        {/* FOOTER */}
-                        <footer className="mt-20 border-t border-white/5 py-10 text-center">
-                            <div className="flex items-center justify-center gap-2 mb-4 opacity-50">
-                                <Icons.Terminal className="w-5 h-5 text-gray-400" />
-                                <span className="font-bold text-gray-300">RBScript Hub</span>
-                            </div>
-                            <p className="text-gray-600 text-sm">© 2025 All Rights Reserved. Not affiliated with Roblox Corporation.</p>
-                        </footer>
-
-                        {/* MODAL DOWNLOAD (Previously Injection) */}
-                        {selectedScript && (
-                            <DownloadModal 
-                                script={selectedScript} 
-                                onClose={() => setSelectedScript(null)} 
-                            />
-                        )}
-
-                    </div>
-                </InAppBrowserGuard>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<ScriptHub />);
-    </script>
-</body>
-</html>
