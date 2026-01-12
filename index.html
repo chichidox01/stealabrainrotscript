@@ -3,415 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RBScript - Premium Roblox Scripts</title>
-    
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Space Grotesk for Gaming Vibe -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>RBScript - Roblox Scripts</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Space Grotesk', sans-serif; }
-        
-        /* Animations */
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
-            50% { box-shadow: 0 0 25px rgba(6, 182, 212, 0.8); }
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --primary: #7289da;
+            --accent: #00ff88;
+            --bg: #0f0f13;
+            --card-bg: #1c1c24;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
         }
-        .animate-pulse-glow {
-            animation: pulse-glow 2s infinite;
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            padding-bottom: 50px; 
+            min-height: 100vh;
         }
 
-        /* Glassmorphism Utilities */
-        .glass-panel {
-            background: rgba(20, 20, 25, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        /* --- HEADER --- */
+        header {
+            background: rgba(15, 15, 19, 0.95);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+        .logo span { color: var(--accent); }
+        
+        /* --- HERO --- */
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.05) 0%, rgba(15, 15, 19, 0) 70%);
         }
         
-        /* Iframe Animation */
-        @keyframes scale-up {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        .hero h2 { margin-bottom: 20px; font-size: 26px; }
+        .hero h2 span { color: var(--accent); }
+        
+        .search-box {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        .animate-scale-up {
-            animation: scale-up 0.3s ease-out forwards;
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 25px;
+            border-radius: 50px;
+            border: 2px solid #333;
+            background: rgba(28, 28, 36, 0.8);
+            color: white;
+            font-size: 16px;
+            transition: 0.3s;
+            outline: none;
         }
+        
+        .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 255, 136, 0.1); }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        /* --- GRID SYSTEM --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        /* --- SCRIPT CARD --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .card:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--accent); 
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .card-img {
+            height: 100px;
+            width: 100%;
+            background-color: #2a2a35;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        /* Badges */
+        .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .badge.new { background: #ff4444; }
+        .badge.updated { background: var(--accent); color: #000; }
+
+        /* Images */
+        .img-1 { background-image: url('https://i.ibb.co/kgHL0xYV/noFilter.webp'); }
+        .img-2 { background-image: url('https://i.ibb.co/Zpp97Nn5/noFilter.webp'); }
+        .img-3 { background-image: url('https://i.ibb.co/jkRP8Fnd/0-1766455675687.jpg'); }
+        .img-4 { background-image: url('https://i.ibb.co/C5FFDWBq/no-Filter.png'); }
+        .img-5 { background-image: url('https://i.ibb.co/mnmBDrx/79546208627805-1764043205099.webp'); }
+        .img-6 { background-image: url('https://i.ibb.co/KpfTK6xt/0-1764778560329.webp'); }
+        .img-7 { background-image: url('https://i.ibb.co/N2pQN6Wd/109983668079237-1763934806891.webp'); }
+
+        .card-body { padding: 12px; }
+        
+        .card-title { 
+            font-weight: 700; 
+            font-size: 14px; 
+            margin-bottom: 8px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        
+        .card-meta { 
+            font-size: 11px; 
+            color: var(--text-muted); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        
+        .views i { color: var(--accent); margin-right: 3px; }
+
+        /* --- MODAL (POPUP) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active { opacity: 1; }
+
+        .modal {
+            background: #15151a;
+            width: 90%;
+            max-width: 420px;
+            padding: 0;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .modal { transform: scale(1); }
+
+        .modal-header {
+            background: linear-gradient(90deg, #1c1c24, #15151a);
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 { font-size: 16px; color: white; }
+        .close-btn { cursor: pointer; color: #888; font-size: 20px; transition: 0.2s; }
+        .close-btn:hover { color: white; }
+
+        .modal-body { padding: 25px 20px; text-align: center; }
+
+        /* DEVICE SELECTION STYLES */
+        .step-title {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .device-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .device-item i { font-size: 28px; color: #ccc; transition: 0.2s; }
+        .device-item span { font-size: 13px; font-weight: 600; color: #ccc; }
+
+        .device-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .device-item:hover i, .device-item:hover span { color: var(--accent); }
+
+        /* Hiding Steps */
+        .step-hidden { display: none; }
+        .step-active { display: block; animation: fadeIn 0.4s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TERMINAL EFFECT */
+        .terminal-loader {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0 20px 0;
+            text-align: left;
+            font-size: 11px;
+            height: 120px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .action-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+        
+        .action-btn:hover { box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); transform: translateY(-2px); }
+
+        /* LOCKER IFRAME OVERLAY */
+        .iframe-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); /* See-through background */
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .iframe-nav {
+            background: #111;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center; /* Center the text since button is gone */
+            align-items: center;
+            border-bottom: 1px solid var(--accent);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        
+        .iframe-nav span { color: #fff; font-weight: bold; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+
+        iframe {
+            width: 100%;
+            flex-grow: 1;
+            border: none;
+            background: transparent;
+        }
+
     </style>
 </head>
-<body class="bg-[#050508] text-gray-100 antialiased selection:bg-cyan-500 selection:text-white">
-    <div id="root"></div>
+<body>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+    <!-- Header -->
+    <header>
+        <div class="logo">RB<span>Script</span></div>
+    </header>
 
-        // --- ICONS (SVG) ---
-        const Icons = {
-            Search: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
-            Terminal: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>,
-            X: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
-            Download: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
-            Windows: (props) => <svg {...props} viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4h-13.05M0 12.55h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>,
-            Android: (props) => <svg {...props} viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1529-.5676.416.416 0 00-.568.1525l-2.0187 3.4955C15.6599 8.356 13.916 8.016 12 8.016s-3.6595.34-5.1381.9266L4.8428 5.4471a.4158.4158 0 00-.568-.1525.416.416 0 00-.1525.5676l1.9973 3.4592C2.689 11.0134.3642 15.1147.3642 20.25h23.2716c0-5.1353-2.3248-9.2366-5.7368-10.9286"/></svg>,
-            Apple: (props) => <svg {...props} viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.74 1.18 0 2.45-1.02 3.96-.85 1.5.17 2.63.79 3.32 1.79-3.02 1.75-2.5 6.2 1.15 7.6-1.12 2.38-2.39 4.38-3.51 3.69M12.91 5.23c-.3 2.13-2.3 3.68-4.23 3.55-.26-2.12 2.21-4.04 4.23-3.55z"/></svg>,
-            Lock: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
-            Check: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-            Smartphone: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
-            Monitor: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>,
-            Cloud: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19c0-1.7-1.3-3-3-3h-1.1c-.1-2.9-2.4-5.2-5.3-5.2-1.9 0-3.6 1-4.6 2.5C1.5 13.9 0 16.3 0 19s2.7 5 6 5h10.5c3 0 5.5-2.2 5.5-5s-2.5-5-4.5-5z"/><polyline points="12 13 12 21"/><polyline points="9 18 12 21 15 18"/></svg>,
-            Shield: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        };
+    <!-- Hero -->
+    <div class="hero">
+        <h2>Unlock <span>Premium</span> Roblox Scripts</h2>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search scripts (e.g. Blox Fruits)..." onkeyup="filterScripts()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </div>
 
-        // --- COMPONENTS ---
-
-        // 1. DOWNLOAD MODAL (Clean Version - No X on Locker)
-        const DownloadModal = ({ script, onClose }) => {
-            const [step, setStep] = useState('device'); // device, console, locker
-            const [progress, setProgress] = useState(0);
-
-            const handleDeviceSelect = (device) => {
-                setStep('console');
-                runDownloadSimulation();
-            };
-
-            const runDownloadSimulation = () => {
-                let p = 0;
-                const pInterval = setInterval(() => {
-                    p += 2;
-                    if(p > 95) clearInterval(pInterval);
-                    setProgress(p);
-                }, 80); 
-
-                setTimeout(() => {
-                    clearInterval(pInterval);
-                    setProgress(100);
-                    setTimeout(() => {
-                        setStep('locker');
-                    }, 500);
-                }, 4000); 
-            };
-
-            return (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-fade-in">
-                    
-                    {step === 'locker' ? (
-                        <div className="fixed inset-0 z-[60] flex flex-col animate-scale-up">
-                            {/* !IMPORTANT!
-                                Hiyyedt button "Close" (X) mn hna bsedda.
-                                Daba User MA3NDOCH kifach y-fermer l-Locker.
-                                Khasso y-verifyer bzez mno. 
-                            */}
-
-                            {/* Iframe Container - Pure Content */}
-                            <div className="w-full h-full flex items-center justify-center">
-                                <iframe 
-                                    src={script.lockerUrl}
-                                    className="w-full h-full max-w-5xl max-h-[90vh] border-0 rounded-lg"
-                                    title="Content Verification"
-                                ></iframe>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="w-full max-w-md bg-[#0e0e12] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col relative transition-all duration-300">
-                            
-                            {/* Header */}
-                            <div className="flex items-center justify-between p-4 border-b border-gray-800 bg-[#131318]">
-                                <div className="flex items-center gap-2">
-                                    <Icons.Cloud className="w-5 h-5 text-cyan-400" />
-                                    <span className="font-bold text-gray-200">Download Configuration</span>
-                                </div>
-                                <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
-                                    <Icons.X className="w-6 h-6" />
-                                </button>
-                            </div>
-
-                            {/* Content Area */}
-                            <div className="p-8">
-                                
-                                {/* STEP 1: DEVICE SELECTION */}
-                                {step === 'device' && (
-                                    <div className="text-center space-y-6">
-                                        <h3 className="text-lg font-bold text-white">Choose the platform you play Roblox on</h3>
-                                        
-                                        <div className="grid grid-cols-3 gap-4 mt-4">
-                                            <button onClick={() => handleDeviceSelect('windows')} className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-gray-900 border border-gray-700 hover:border-cyan-500 hover:bg-gray-800 transition-all group">
-                                                <Icons.Windows className="w-8 h-8 text-gray-500 group-hover:text-cyan-400 transition-colors" />
-                                                <span className="text-xs font-medium text-gray-300">Windows</span>
-                                            </button>
-                                            <button onClick={() => handleDeviceSelect('android')} className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-gray-800 transition-all group">
-                                                <Icons.Android className="w-8 h-8 text-gray-500 group-hover:text-green-400 transition-colors" />
-                                                <span className="text-xs font-medium text-gray-300">Android</span>
-                                            </button>
-                                            <button onClick={() => handleDeviceSelect('ios')} className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-gray-900 border border-gray-700 hover:border-white hover:bg-gray-800 transition-all group">
-                                                <Icons.Apple className="w-8 h-8 text-gray-500 group-hover:text-white transition-colors" />
-                                                <span className="text-xs font-medium text-gray-300">iOS</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* STEP 2: SIMPLE PROGRESS BAR */}
-                                {step === 'console' && (
-                                    <div className="space-y-6 py-4">
-                                        <div className="text-center">
-                                            <div className="w-16 h-16 bg-cyan-900/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                                                <Icons.Cloud className="w-8 h-8 text-cyan-400" />
-                                            </div>
-                                            <h3 className="text-lg font-medium text-white mb-1">Preparing your file...</h3>
-                                            <p className="text-sm text-gray-500">Please wait a moment.</p>
-                                        </div>
-                                        
-                                        {/* Progress Bar */}
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-xs text-gray-400 px-1">
-                                                <span>Loading...</span>
-                                                <span>{progress}%</span>
-                                            </div>
-                                            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                                                <div 
-                                                    className="h-full bg-gradient-to-r from-cyan-600 to-blue-500 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(6,182,212,0.5)]"
-                                                    style={{ width: `${progress}%` }}
-                                                ></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-
-        // --- MAIN PAGE COMPONENT ---
-        const ScriptHub = () => {
-            const [searchQuery, setSearchQuery] = useState('');
-            const [selectedScript, setSelectedScript] = useState(null); 
+    <!-- Scripts Grid -->
+    <div class="container">
+        <div class="section-title">Latest Uploads</div>
+        <div class="grid" id="scriptGrid">
             
-            // Script Data
-            const scripts = [
-                {
-                    id: 1,
-                    title: "Blox Fruits God Mode",
-                    image: "https://i.ibb.co/jkRP8Fnd/0-1766455675687.jpg", 
-                    desc: "Auto Farm, Fruit Sniper, Auto Raid. Best for mobile/pc.",
-                    tags: ["Auto Farm", "ESP", "No Key"],
-                    updated: "10m ago",
-                    lockerUrl: "https://execmods.com/cl/i/m55252",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 2,
-                    title: "The Forge [BETA] 2025",
-                    image: "https://i.ibb.co/C5FFDWBq/no-Filter.png",
-                    desc: "Undetected script with God Mode, Instant Craft & Attack features.",
-                    tags: ["God Mode", "Crafting", "BETA"],
-                    updated: "1h ago",
-                    lockerUrl: "https://execmods.com/cl/i/xp69kv",
-                    support: { pc: true, mobile: true } 
-                },
-                {
-                    id: 3,
-                    title: "YouTube Music Player V4",
-                    image: "https://i.ibb.co/KpfTK6xt/0-1764778560329.webp",
-                    desc: "Play any song from YouTube directly in Roblox. Fully controllable.",
-                    tags: ["Music", "Utility", "Search"],
-                    updated: "2h ago",
-                    lockerUrl: "https://execmods.com/cl/i/m5er22",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 4,
-                    title: "Volleyball Legends Auto",
-                    image: "https://i.ibb.co/kgHL0xYV/noFilter.webp",
-                    desc: "Auto Play, Auto Spin, Infinite Spins. Climb ranks easily.",
-                    tags: ["Auto Play", "Spins", "Rank Push"],
-                    updated: "3h ago",
-                    lockerUrl: "https://execmods.com/cl/i/o463xr",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 5,
-                    title: "Brainrot Stealer",
-                    image: "https://i.ibb.co/N2pQN6Wd/109983668079237-1763934806891.webp",
-                    desc: "Auto Hatch, Relic finder, Shiny Hunter. Fast farming.",
-                    tags: ["Farming", "Pets", "Shiny"],
-                    updated: "5h ago",
-                    lockerUrl: "https://execmods.com/cl/i/7jdqlv",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 6,
-                    title: "99 Nights - Fly & Speed",
-                    image: "https://i.ibb.co/mnmBDrx/79546208627805-1764043205099.webp",
-                    desc: "Custom Aura, Speed hacks, High Jump. Dominate the server.",
-                    tags: ["Speed", "Fly", "Aura"],
-                    updated: "1d ago",
-                    lockerUrl: "https://execmods.com/cl/i/7jdx7n",
-                    support: { pc: true, mobile: true }
-                },
-                {
-                    id: 7,
-                    title: "Plants Vs Brainrots Aim",
-                    image: "https://i.ibb.co/Zpp97Nn5/noFilter.webp",
-                    desc: "Silent Aim, Auto Stomp, Infinite Cash. Undetected.",
-                    tags: ["Aimlock", "Cash", "Silent Aim"],
-                    updated: "1d ago",
-                    lockerUrl: "https://execmods.com/cl/i/82drvr",
-                    support: { pc: true, mobile: true } 
-                }
-            ];
-
-            const filteredScripts = scripts.filter(s => 
-                s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                s.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
-
-            return (
-                <div className="min-h-screen pb-20">
-                    
-                    {/* Background Gradients */}
-                    <div className="fixed inset-0 pointer-events-none -z-10">
-                        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/20 rounded-full blur-[100px]"></div>
-                        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px]"></div>
+            <!-- 1. Steal a brainrot (Moved to First) -->
+            <div class="card" onclick="openModal('Steal A Brainrot Script', 'v1.1', 'https://execmods.com/cl/i/7jdqlv')">
+                <div class="card-img img-7"><div class="badge new">OP</div></div>
+                <div class="card-body">
+                    <div class="card-title">Steal A Brainrot Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 400K</span>
+                        <span><i class="fa-regular fa-clock"></i> 2 days ago</span>
                     </div>
-
-                    {/* Navbar - CLEANED UP: Centered Logo, No Links */}
-                    <nav className="border-b border-white/5 bg-[#050508]/80 backdrop-blur-md sticky top-0 z-30">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-center">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-2 rounded-lg shadow-lg shadow-cyan-500/20">
-                                    <Icons.Terminal className="w-5 h-5 text-white" />
-                                </div>
-                                <span className="text-xl font-bold tracking-tight text-white">RB<span className="text-cyan-400">Script</span></span>
-                            </div>
-                        </div>
-                    </nav>
-
-                    {/* Hero Section */}
-                    <header className="pt-16 pb-12 text-center px-4">
-                        <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight">
-                            Dominate Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Favorite Games</span>
-                        </h1>
-                        <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-                            Unlock hidden features, auto-farm, and god-mode with our premium selection of undetected scripts.
-                        </p>
-
-                        {/* Search Bar */}
-                        <div className="max-w-xl mx-auto relative group">
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                            <div className="relative bg-[#131318] border border-white/10 rounded-2xl flex items-center p-2 shadow-2xl">
-                                <Icons.Search className="w-6 h-6 text-gray-500 ml-3" />
-                                <input 
-                                    type="text" 
-                                    placeholder="Search scripts (e.g., Blox Fruits)..." 
-                                    className="w-full bg-transparent border-none text-white px-4 py-3 focus:outline-none placeholder-gray-600 font-medium"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                    </header>
-
-                    {/* Scripts Grid */}
-                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredScripts.map(script => (
-                                <div 
-                                    key={script.id} 
-                                    onClick={() => setSelectedScript(script)} // CLICKABLE CARD
-                                    className="group glass-panel rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-900/10 flex flex-col cursor-pointer"
-                                >
-                                    
-                                    {/* Image */}
-                                    <div className="relative h-48 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#141419] to-transparent z-10 opacity-90"></div>
-                                        <img src={script.image} alt={script.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                        
-                                        {/* Support Badges */}
-                                        <div className="absolute top-3 right-3 z-20 flex gap-1">
-                                            {script.support.pc && (
-                                                <div className="bg-black/60 backdrop-blur p-1.5 rounded-lg border border-white/10" title="PC Supported">
-                                                    <Icons.Monitor className="w-4 h-4 text-cyan-400" />
-                                                </div>
-                                            )}
-                                            {script.support.mobile && (
-                                                <div className="bg-black/60 backdrop-blur p-1.5 rounded-lg border border-white/10" title="Mobile Supported">
-                                                    <Icons.Smartphone className="w-4 h-4 text-green-400" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="p-6 pt-2 flex-1 flex flex-col">
-                                        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">{script.title}</h3>
-                                        
-                                        <div className="flex flex-wrap gap-2 mb-4">
-                                            {script.tags.map(tag => (
-                                                <span key={tag} className="text-[11px] font-bold uppercase tracking-wider px-2 py-1 bg-white/5 text-gray-400 rounded border border-white/5">
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-
-                                        <p className="text-gray-400 text-sm mb-6 line-clamp-2 leading-relaxed flex-1">
-                                            {script.desc}
-                                        </p>
-
-                                        <div className="flex items-center justify-between gap-4 mt-auto">
-                                            <span className="text-xs font-medium text-gray-500">Updated {script.updated}</span>
-                                            <button 
-                                                className="bg-white text-black group-hover:bg-cyan-400 group-hover:text-black px-5 py-2.5 rounded-xl font-bold text-sm transition-colors flex items-center gap-2"
-                                            >
-                                                <Icons.Download className="w-4 h-4" />
-                                                Get Script
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {filteredScripts.length === 0 && (
-                            <div className="text-center py-20">
-                                <p className="text-gray-500 text-lg">No scripts found matching "{searchQuery}"</p>
-                            </div>
-                        )}
-                    </main>
-
-                    {/* FOOTER */}
-                    <footer className="mt-20 border-t border-white/5 py-10 text-center">
-                        <div className="flex items-center justify-center gap-2 mb-4 opacity-50">
-                            <Icons.Terminal className="w-5 h-5 text-gray-400" />
-                            <span className="font-bold text-gray-300">RBScript Hub</span>
-                        </div>
-                        <p className="text-gray-600 text-sm">© 2025 All Rights Reserved. Not affiliated with Roblox Corporation.</p>
-                    </footer>
-
-                    {/* MODAL DOWNLOAD (Previously Injection) */}
-                    {selectedScript && (
-                        <DownloadModal 
-                            script={selectedScript} 
-                            onClose={() => setSelectedScript(null)} 
-                        />
-                    )}
-
                 </div>
-            );
-        };
+            </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<ScriptHub />);
+            <!-- 2. Blox Fruits -->
+            <div class="card" onclick="openModal('Blox Fruits Script', 'v4.5', 'https://execmods.com/cl/i/m55252')">
+                <div class="card-img img-3"><div class="badge updated">HOT</div></div>
+                <div class="card-body">
+                    <div class="card-title">Blox Fruits Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 2.5M</span>
+                        <span><i class="fa-regular fa-clock"></i> 1 week ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 99 nights in the forest -->
+            <div class="card" onclick="openModal('99 Nights In The Forest Script', 'v1.5', 'https://execmods.com/cl/i/7jdx7n')">
+                <div class="card-img img-5"></div>
+                <div class="card-body">
+                    <div class="card-title">99 Nights In The Forest Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 320K</span>
+                        <span><i class="fa-regular fa-clock"></i> 3 days ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Plants Vs Brainrots -->
+            <div class="card" onclick="openModal('Plants Vs Brainrots Script', 'v2.1', 'https://execmods.com/cl/i/82drvr')">
+                <div class="card-img img-2"><div class="badge new">NEW</div></div>
+                <div class="card-body">
+                    <div class="card-title">Plants Vs Brainrots Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 850K</span>
+                        <span><i class="fa-regular fa-clock"></i> 5 days ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. The Forge [BETA] -->
+            <div class="card" onclick="openModal('The Forge [BETA] Script', 'v0.9', 'https://execmods.com/cl/i/xp69kv')">
+                <div class="card-img img-4"></div>
+                <div class="card-body">
+                    <div class="card-title">The Forge [BETA] Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 450K</span>
+                        <span><i class="fa-regular fa-clock"></i> 2 weeks ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Volleyball Legends -->
+            <div class="card" onclick="openModal('Volleyball Legends Script', 'v1.0', 'https://execmods.com/cl/i/o463xr')">
+                <div class="card-img img-1"><div class="badge updated">UPDATED</div></div>
+                <div class="card-body">
+                    <div class="card-title">Volleyball Legends Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 1.2M</span>
+                        <span><i class="fa-regular fa-clock"></i> 1 week ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. YouTube Music Player -->
+            <div class="card" onclick="openModal('YouTube Music Player Script', 'v3.0', 'https://execmods.com/cl/i/m5er22')">
+                <div class="card-img img-6"></div>
+                <div class="card-body">
+                    <div class="card-title">YouTube Music Player Script</div>
+                    <div class="card-meta">
+                        <span class="views"><i class="fa-solid fa-eye"></i> 920K</span>
+                        <span><i class="fa-regular fa-clock"></i> 3 weeks ago</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal HTML -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Script Name</h3>
+                <i class="fa-solid fa-xmark close-btn" onclick="closeModal()"></i>
+            </div>
+            <div class="modal-body">
+                
+                <!-- STEP 1: DEVICE SELECTION -->
+                <div id="step-device" class="step-active">
+                    <div class="step-title">Select Your Device</div>
+                    <div class="device-grid">
+                        <div class="device-item" onclick="selectDevice('Windows')">
+                            <i class="fa-brands fa-windows"></i>
+                            <span>Windows</span>
+                        </div>
+                        <div class="device-item" onclick="selectDevice('Android')">
+                            <i class="fa-brands fa-android"></i>
+                            <span>Android</span>
+                        </div>
+                        <div class="device-item" onclick="selectDevice('iOS')">
+                            <i class="fa-brands fa-apple"></i>
+                            <span>iOS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: PROCESSING & DOWNLOAD -->
+                <div id="step-process" class="step-hidden">
+                    <div class="status-badge">STATUS: WORKING ✅</div>
+                    <div class="terminal-loader" id="terminal"></div>
+                    <button class="action-btn" id="downloadBtn" onclick="triggerLocker()" style="display:none;">
+                        <span>Get Script</span> <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- LOCKER IFRAME OVERLAY -->
+    <div id="lockerOverlay" class="iframe-overlay">
+        <div class="iframe-nav">
+            <span>COMPLETE OFFER TO UNLOCK SCRIPT</span>
+        </div>
+        <iframe id="lockerFrame" src=""></iframe>
+    </div>
+
+    <script>
+        // --- VARIABLES ---
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const terminal = document.getElementById('terminal');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const stepDevice = document.getElementById('step-device');
+        const stepProcess = document.getElementById('step-process');
+        
+        // Iframe Elements
+        const lockerOverlay = document.getElementById('lockerOverlay');
+        const lockerFrame = document.getElementById('lockerFrame');
+
+        // Store the specific link for the current script
+        let currentLockerLink = "";
+
+        // Open Modal (Reset to Step 1)
+        function openModal(title, version, link) {
+            modalOverlay.style.display = 'flex';
+            setTimeout(() => { modalOverlay.classList.add('active'); }, 10);
+            
+            modalTitle.innerText = title;
+            currentLockerLink = link; // Store the unique link
+            
+            // RESET TO DEVICE SELECTION
+            stepDevice.classList.remove('step-hidden');
+            stepDevice.classList.add('step-active');
+            stepProcess.classList.remove('step-active');
+            stepProcess.classList.add('step-hidden');
+            
+            // RESET TERMINAL
+            downloadBtn.style.display = 'none';
+            terminal.innerHTML = "";
+        }
+
+        // Handle Device Selection (Go to Step 2)
+        function selectDevice(device) {
+            // Hide Step 1
+            stepDevice.classList.remove('step-active');
+            stepDevice.classList.add('step-hidden');
+            
+            // Show Step 2
+            stepProcess.classList.remove('step-hidden');
+            stepProcess.classList.add('step-active');
+
+            // Start Animation
+            startTerminalAnimation(device);
+        }
+
+        // Terminal Animation Logic
+        function startTerminalAnimation(device) {
+            terminal.innerHTML = `> Platform detected: <span style='color:#fff'>${device}</span><br>`;
+            
+            setTimeout(() => { terminal.innerHTML += "> Connecting to server...<br>"; }, 500);
+            setTimeout(() => { terminal.innerHTML += "> Checking script status...<br>"; }, 1200);
+            setTimeout(() => { terminal.innerHTML += "> Status: <span style='color:#0f0'>UNDETECTED</span><br>"; }, 2000);
+            setTimeout(() => { terminal.innerHTML += "> Bypassing key system...<br>"; }, 3000);
+            setTimeout(() => { 
+                terminal.innerHTML += "> <span style='color:#0f0'>Ready to inject.</span><br>"; 
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                // Show Download Button
+                downloadBtn.style.display = 'flex';
+                downloadBtn.style.animation = "shake 0.5s";
+            }, 4000);
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            setTimeout(() => { modalOverlay.style.display = 'none'; }, 300);
+        }
+
+        // MODIFIED: Trigger Locker in Iframe Overlay
+        function triggerLocker() {
+            if (currentLockerLink) {
+                // Change text back to GET SCRIPT as requested (keeping icon)
+                downloadBtn.innerHTML = "<span>GET SCRIPT</span> <i class='fa-solid fa-download'></i>";
+                
+                // Close the "Terminal" modal first
+                closeModal();
+
+                // Open the Iframe Overlay
+                lockerFrame.src = currentLockerLink;
+                lockerOverlay.style.display = 'flex';
+                
+            } else {
+                alert("Link not found!");
+            }
+        }
+
+        // Search Filter
+        function filterScripts() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.getElementsByClassName('card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].querySelector(".card-title").innerText.toLowerCase();
+                if (title.includes(input)) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // Close on outside click
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>
